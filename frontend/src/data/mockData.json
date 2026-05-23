@@ -1,0 +1,57 @@
+[
+  {
+    "invoiceNo": "INV-2026-001",
+    "customer": "ABC Trading Ltd",
+    "invoiceAmount": "10.00",
+    "invoiceCurrency": "USD",
+    "expectedConverted": "MYR 42.50",
+    "bankReceived": "42.50",
+    "bankCurrency": "MYR",
+    "reference": "TXN12345",
+    "date": "2026-05-22"
+  },
+  {
+    "invoiceNo": "INV-2026-002",
+    "customer": "Global Supplies Sdn Bhd",
+    "invoiceAmount": "10.00",
+    "invoiceCurrency": "USD",
+    "expectedConverted": "MYR 42.50",
+    "bankReceived": "38.00",
+    "bankCurrency": "MYR",
+    "reference": "TXN55512",
+    "date": "2026-05-21"
+  },
+  {
+    "invoiceNo": "INV-2026-003",
+    "customer": "Pacific Retail Co",
+    "invoiceAmount": "10.00",
+    "invoiceCurrency": "USD",
+    "expectedConverted": "MYR 42.50",
+    "bankReceived": "50.00",
+    "bankCurrency": "MYR",
+    "reference": "TXN77821",
+    "date": "2026-05-20"
+  },
+  {
+    "invoiceNo": "INV-2026-004",
+    "customer": "Nexus Import Export",
+    "invoiceAmount": "10.00",
+    "invoiceCurrency": "USD",
+    "expectedConverted": "MYR 42.50",
+    "bankReceived": "42.10",
+    "bankCurrency": "MYR",
+    "reference": "TXN12346",
+    "date": "2026-05-22"
+  },
+  {
+    "invoiceNo": "INV-2026-005",
+    "customer": "Unknown Sender",
+    "invoiceAmount": "10.00",
+    "invoiceCurrency": "USD",
+    "expectedConverted": "MYR 42.50",
+    "bankReceived": "80.00",
+    "bankCurrency": "MYR",
+    "reference": "TXN99999",
+    "date": "2026-05-22"
+  }
+]
