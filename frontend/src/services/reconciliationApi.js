@@ -66,12 +66,30 @@ export function validateExtractedData(data) {
   }
 }
 
-// Future backend integration:
-// export async function runReconciliationWithBackend(payload) {
-//   const response = await fetch("http://localhost:5000/reconcile", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(payload),
-//   });
-//   return response.json();
-// }
+export async function runReconciliationWithBackend(payload) {
+  const { invoice, selectedTransaction } = payload
+
+  const body = {
+    invoiceNo:       invoice.invoiceNo,
+    customer:        invoice.customer,
+    invoiceAmount:   parseFloat(invoice.invoiceAmount),
+    invoiceCurrency: invoice.invoiceCurrency,
+    bankReceived:    parseFloat(selectedTransaction.amount),
+    bankCurrency:    selectedTransaction.currency || 'MYR',
+    reference:       selectedTransaction.reference || invoice.reference || null,
+    date:            selectedTransaction.date || null,
+  }
+
+  const response = await fetch('http://localhost:8000/reconcile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Unknown error' }))
+    throw new Error(error.detail || `Server error ${response.status}`)
+  }
+
+  return response.json()
+}

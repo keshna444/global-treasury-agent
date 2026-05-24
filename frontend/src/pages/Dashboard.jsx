@@ -9,7 +9,7 @@ import AuditTrail from '../components/AuditTrail'
 import ReportSummary from '../components/ReportSummary'
 import HomeHeader from '../components/HomeHeader'
 import DataExtractionPreview from '../components/DataExtractionPreview'
-import { runMockReconciliation } from '../services/reconciliationApi'
+import { runMockReconciliation, runReconciliationWithBackend } from '../services/reconciliationApi'
 import { SCENARIOS, AGENT_FLOW_STEPS, bankTransactions as defaultBankRows } from '../data/mockData'
 
 const ts = () =>
@@ -117,19 +117,25 @@ export default function Dashboard({ currentPage, onNavigate }) {
     if (newRows[0]) addAudit(`Bank transaction ${newRows[0].reference} auto-selected`)
   }, [addAudit])
 
-  // Run reconciliation with step animation
+  // Run reconciliation with step animation — calls real backend
   const handleRun = useCallback(async () => {
-    if (!selectedScenario || isRunning) return
+    if (isRunning) return
+    const selectedTxn = bankRows.find((r) => r.id === selectedBankRowId)
+    if (!selectedTxn) {
+      setNotification({ level: 'error', message: 'Select a bank transaction before running reconciliation.' })
+      return
+    }
+
     setIsRunning(true)
     setResult(null)
     setCompletedSteps(0)
     setTraceVisible(0)
+    setNotification(null)
 
     addAudit('Reconciliation started')
     addAudit('FX conversion checked')
 
-    const totalFlow  = AGENT_FLOW_STEPS.length
-    const totalTrace = selectedScenario.result.decisionTrace.length
+    const totalFlow = AGENT_FLOW_STEPS.length
 
     let flow = 0
     const flowInterval = setInterval(() => {
@@ -142,35 +148,42 @@ export default function Dashboard({ currentPage, onNavigate }) {
     const traceInterval = setInterval(() => {
       trace++
       setTraceVisible(trace)
-      if (trace >= totalTrace) clearInterval(traceInterval)
     }, 550)
 
     try {
-      await runMockReconciliation(selectedScenario.id)
+      const backendResult = await runReconciliationWithBackend({
+        invoice: invoiceData,
+        selectedTransaction: selectedTxn,
+      })
+
       clearInterval(flowInterval)
       clearInterval(traceInterval)
       setCompletedSteps(totalFlow)
-      setTraceVisible(totalTrace)
-      setResult(selectedScenario.result)
-      if (['Unmatched', 'Needs Review'].includes(selectedScenario.result.status)) {
+      setTraceVisible(backendResult.decisionTrace?.length ?? 6)
+      setResult(backendResult)
+
+      if (['Unmatched', 'Needs Review'].includes(backendResult.status)) {
         setNotification({
-          level: selectedScenario.result.status === 'Unmatched' ? 'error' : 'warning',
-          message: selectedScenario.result.suggestedAction,
+          level: backendResult.status === 'Unmatched' ? 'error' : 'warning',
+          message: backendResult.suggestedAction,
         })
-      } else {
-        setNotification(null)
       }
+
       addAudit('Amount compared')
       addAudit('Reference verified')
-      addAudit(
-        `Final status: ${selectedScenario.result.status} — confidence ${selectedScenario.result.confidence}%`
-      )
+      addAudit(`Final status: ${backendResult.status} — confidence ${backendResult.confidence}%`)
     } catch (e) {
+      clearInterval(flowInterval)
+      clearInterval(traceInterval)
       console.error(e)
+      setNotification({
+        level: 'error',
+        message: `Backend error: ${e.message}. Check that the server is running at http://localhost:8000.`,
+      })
     } finally {
       setIsRunning(false)
     }
-  }, [selectedScenario, isRunning, addAudit])
+  }, [isRunning, bankRows, selectedBankRowId, invoiceData, addAudit])
 
   // ═══════════════════════════════════════════════
   // HOME PAGE
