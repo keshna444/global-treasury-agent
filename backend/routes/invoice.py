@@ -59,7 +59,7 @@ def _save_file(file_bytes: bytes, prefix: str, filename: str) -> None:
 @router.post("/upload-invoice", response_model=UploadResponse)
 async def upload_invoice(
     file: UploadFile = File(...),
-    db:   Session    = Depends(get_db),
+    db: Session = Depends(get_db)
 ):
     """Accept an invoice file and store all parseable rows in the database.
 
@@ -132,7 +132,7 @@ async def upload_invoice(
 
 
 @router.get("/invoices", response_model=List[InvoiceOut])
-def list_invoices(db: Session = Depends(get_db)):
+def get_invoices(db: Session = Depends(get_db)):
     """Return all stored invoices as a JSON array.
     Primarily used for debugging and for the frontend's transaction-listing views.
     response_model=List[InvoiceOut] handles ORM-to-JSON serialisation automatically.
