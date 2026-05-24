@@ -1,0 +1,278 @@
+{
+  "info": {
+    "name": "Global Treasury Agent API",
+    "description": "Cross-border payment reconciliation for SMEs.\n\nBase URL: http://localhost:8000\n\nWorkflow:\n1. Upload invoices (CSV/XLSX) via POST /upload-invoice\n2. Upload bank statement (CSV/XLSX) via POST /upload-bank-statement\n3. Reconcile inline via POST /reconcile (Mode A — direct from form data)\n4. Or reconcile by DB ID via POST /reconcile (Mode B)\n5. View stored results via GET /results",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "Upload invoice CSV",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/upload-invoice",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "../samples/invoices/invoices.csv",
+                  "description": "CSV invoice file"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload invoice XLSX",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/upload-invoice",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "../samples/invoices/invoices.xlsx"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload invoice PDF (placeholder)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/upload-invoice",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/path/to/invoice.pdf",
+                  "description": "Returns 200 with records_stored=0 and OCR message"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload bank statement CSV",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/upload-bank-statement",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "../samples/bank_statements/bank_statement.csv"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload bank statement XLSX",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/upload-bank-statement",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "../samples/bank_statements/bank_statement.xlsx"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Upload bank statement image (placeholder)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/upload-bank-statement",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/path/to/scan.png",
+                  "description": "Returns 200 with records_stored=0 and OCR message"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reconcile — Mode A (inline)",
+      "item": [
+        {
+          "name": "Perfect match (USD → MYR)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-001\",\n  \"customer\": \"ABC Trading Ltd\",\n  \"invoiceAmount\": 10.00,\n  \"invoiceCurrency\": \"USD\",\n  \"bankReceived\": 42.50,\n  \"bankCurrency\": \"MYR\",\n  \"reference\": \"TXN-12345\",\n  \"date\": \"2026-05-22\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Underpaid",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-002\",\n  \"customer\": \"Global Supplies Sdn Bhd\",\n  \"invoiceAmount\": 10.00,\n  \"invoiceCurrency\": \"USD\",\n  \"bankReceived\": 38.00,\n  \"bankCurrency\": \"MYR\",\n  \"reference\": \"TXN-12346\",\n  \"date\": \"2026-05-21\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Overpaid",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-003\",\n  \"customer\": \"Pacific Retail Co\",\n  \"invoiceAmount\": 10.00,\n  \"invoiceCurrency\": \"USD\",\n  \"bankReceived\": 50.00,\n  \"bankCurrency\": \"MYR\",\n  \"reference\": \"TXN-12347\",\n  \"date\": \"2026-05-20\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Possible match (no reference)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-004\",\n  \"customer\": \"Nexus Import Export\",\n  \"invoiceAmount\": 10.00,\n  \"invoiceCurrency\": \"USD\",\n  \"bankReceived\": 42.10,\n  \"bankCurrency\": \"MYR\",\n  \"date\": \"2026-05-22\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Unmatched (large deviation)",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-005\",\n  \"customer\": \"Unknown Sender\",\n  \"invoiceAmount\": 10.00,\n  \"invoiceCurrency\": \"USD\",\n  \"bankReceived\": 80.00,\n  \"bankCurrency\": \"MYR\"\n}"
+            }
+          }
+        },
+        {
+          "name": "EUR invoice",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-006\",\n  \"customer\": \"Euro Imports GmbH\",\n  \"invoiceAmount\": 8.00,\n  \"invoiceCurrency\": \"EUR\",\n  \"bankReceived\": 40.00,\n  \"bankCurrency\": \"MYR\",\n  \"reference\": \"TXN-12348\",\n  \"date\": \"2026-05-23\"\n}"
+            }
+          }
+        },
+        {
+          "name": "SGD invoice",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNo\": \"INV-2026-007\",\n  \"customer\": \"Singapore Tech Pte Ltd\",\n  \"invoiceAmount\": 15.00,\n  \"invoiceCurrency\": \"SGD\",\n  \"bankReceived\": 48.00,\n  \"bankCurrency\": \"MYR\",\n  \"reference\": \"TXN-12349\",\n  \"date\": \"2026-05-23\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reconcile — Mode B (DB-backed)",
+      "item": [
+        {
+          "name": "Reconcile by invoice ID",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoice_id\": 1,\n  \"bank_transaction_id\": 1\n}"
+            }
+          }
+        },
+        {
+          "name": "Bulk reconcile all pending",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/reconcile",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Query",
+      "item": [
+        {
+          "name": "List all invoices",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/invoices"
+          }
+        },
+        {
+          "name": "List all bank transactions",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/bank-transactions"
+          }
+        },
+        {
+          "name": "List reconciliation results",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/results"
+          }
+        }
+      ]
+    }
+  ]
+}
