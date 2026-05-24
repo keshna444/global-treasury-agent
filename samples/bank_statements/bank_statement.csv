@@ -1,0 +1,8 @@
+Date,Reference,Description,Amount,Currency
+2026-05-22,TXN-12345,Payment from ABC Trading Ltd,42.5,MYR
+2026-05-21,TXN-12346,Global Supplies Sdn Bhd payment,38.0,MYR
+2026-05-20,TXN-12347,Pacific Retail Co remittance,50.0,MYR
+2026-05-22,,Nexus Import payment,42.1,MYR
+2026-05-22,,Unknown wire transfer,80.0,MYR
+2026-05-23,TXN-12348,Euro Imports GmbH — EUR payment,40.0,MYR
+2026-05-23,TXN-12349,Singapore Tech SGD remittance,48.0,MYR

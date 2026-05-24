@@ -1,0 +1,8 @@
+Invoice No,Customer,Amount,Currency,Reference,Date
+INV-2026-001,ABC Trading Ltd,10.0,USD,TXN-12345,2026-05-22
+INV-2026-002,Global Supplies Sdn Bhd,10.0,USD,TXN-12346,2026-05-21
+INV-2026-003,Pacific Retail Co,10.0,USD,TXN-12347,2026-05-20
+INV-2026-004,Nexus Import Export,10.0,USD,,2026-05-22
+INV-2026-005,Unknown Sender,10.0,USD,,
+INV-2026-006,Euro Imports GmbH,8.0,EUR,TXN-12348,2026-05-23
+INV-2026-007,Singapore Tech Pte Ltd,15.0,SGD,TXN-12349,2026-05-23
