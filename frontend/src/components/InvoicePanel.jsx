@@ -1,12 +1,13 @@
 export default function InvoicePanel({ invoiceData, onChange }) {
   const inv = invoiceData
 
-  const field = (label, key, type = 'text') => (
+  const editableField = (label, key, type = 'text', placeholder = '') => (
     <div key={key}>
       <label className="label-text block mb-1">{label}</label>
       <input
         type={type}
         value={inv[key] ?? ''}
+        placeholder={placeholder}
         onChange={(e) => onChange(key, e.target.value)}
         className="input-field font-mono"
       />
@@ -17,43 +18,42 @@ export default function InvoicePanel({ invoiceData, onChange }) {
     <div className="card p-4 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="label-text mb-0.5">Column 1</p>
-          <h3 className="text-sm font-semibold text-white">Invoice / Payment Proof</h3>
+          <p className="label-text mb-0.5">Invoice / Payment Proof</p>
+          <h3 className="text-sm font-semibold text-[#0F172A]">Invoice Details</h3>
         </div>
       </div>
 
       <div className="space-y-3 flex-1">
+        {/* Read-only fields */}
         <div>
           <label className="label-text block mb-1">Invoice Number</label>
-          <div className="input-field font-mono text-[#888888] cursor-default">{inv.invoiceNo}</div>
+          <div className="input-field font-mono text-[#64748B] cursor-default select-all bg-[#F8FAFC]">{inv.invoiceNo}</div>
         </div>
         <div>
           <label className="label-text block mb-1">Customer</label>
-          <div className="input-field text-[#888888] cursor-default">{inv.customer}</div>
+          <div className="input-field text-[#64748B] cursor-default bg-[#F8FAFC]">{inv.customer}</div>
         </div>
 
+        {/* Editable: invoice amount + currency */}
         <div className="grid grid-cols-2 gap-3">
-          {field('Invoice Amount', 'invoiceAmount')}
-          {field('Currency', 'invoiceCurrency')}
+          {editableField('Invoice Amount', 'invoiceAmount', 'number', '0.00')}
+          {editableField('Currency', 'invoiceCurrency', 'text', 'USD')}
         </div>
 
-        <div>
-          <label className="label-text block mb-1">Expected Local Amount (FX)</label>
-          <div className="input-field font-mono text-[#888888] cursor-default">{inv.expectedConverted}</div>
+        {/* Editable: expected local amount + local currency */}
+        <div className="grid grid-cols-2 gap-3">
+          {editableField('Expected Local Amount', 'expectedLocalAmount', 'number', '0.00')}
+          {editableField('Local Currency', 'localCurrency', 'text', 'MYR')}
         </div>
 
-        {field('Bank Received Amount', 'bankReceived')}
-        {field('Payment Reference', 'reference')}
-
-        <div>
-          <label className="label-text block mb-1">Invoice Date</label>
-          <div className="input-field font-mono text-[#888888] cursor-default">{inv.date}</div>
-        </div>
+        {/* Editable: date and reference */}
+        {editableField('Invoice Date', 'invoiceDate', 'date')}
+        {editableField('Payment Reference', 'reference', 'text', 'TXN...')}
       </div>
 
-      <div className="mt-4 pt-3 border-t border-[#1a1a1a]">
-        <p className="text-xs text-[#444444]">
-          Editable fields update the reconciliation result in real time.
+      <div className="mt-4 pt-3 border-t border-[#E2E8F0]">
+        <p className="text-xs text-[#94A3B8]">
+          Editable fields update in real time. Select a bank row, then run reconciliation.
         </p>
       </div>
     </div>

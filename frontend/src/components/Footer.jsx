@@ -1,39 +1,23 @@
-import { Globe, Github } from 'lucide-react'
-
 export default function Footer() {
   return (
-    <footer className="border-t border-white/8 py-8 mt-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
-              <Globe className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="text-sm font-semibold text-white">
-              Global <span className="text-cyan-400">Treasury</span> Agent
-            </span>
+    <footer className="border-t border-[#1a1a1a] mt-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-5 h-5 bg-white rounded flex items-center justify-center flex-shrink-0">
+            <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
+              <rect x="1" y="7" width="3" height="6" fill="#0a0a0a" />
+              <rect x="5.5" y="4" width="3" height="9" fill="#0a0a0a" />
+              <rect x="10" y="1" width="3" height="12" fill="#0a0a0a" />
+            </svg>
           </div>
-
-          <div className="flex items-center gap-6 text-xs text-slate-500">
-            <span>Frontend prototype — mock data only</span>
-            <span className="hidden sm:block">·</span>
-            <span>No real API keys used</span>
-            <span className="hidden sm:block">·</span>
-            <a
-              href="https://github.com/keshna444/global-treasury-agent"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors"
-            >
-              <Github className="w-3.5 h-3.5" />
-              GitHub
-            </a>
-          </div>
-
-          <div className="text-xs text-slate-600">
-            Built with React + Vite + Tailwind CSS
-          </div>
+          <span className="text-xs text-[#444444] font-medium">Global Treasury Agent</span>
         </div>
+        <p className="text-xs text-[#333333] font-mono">
+          Cross-border payment reconciliation for SMEs
+        </p>
+        <p className="text-xs text-[#2a2a2a] font-mono">
+          Frontend Prototype · 2026
+        </p>
       </div>
     </footer>
   )

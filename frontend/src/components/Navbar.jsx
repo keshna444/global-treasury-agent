@@ -1,6 +1,6 @@
 export default function Navbar({ currentPage, onNavigate }) {
   const navItems = [
-    { id: 'dashboard',      label: 'Dashboard' },
+    { id: 'dashboard',      label: 'Home' },
     { id: 'reconciliation', label: 'Reconciliation' },
     { id: 'transactions',   label: 'Transactions' },
     { id: 'reports',        label: 'Reports' },
@@ -8,7 +8,7 @@ export default function Navbar({ currentPage, onNavigate }) {
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a] border-b border-[#1a1a1a]">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E2E8F0] shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
@@ -16,14 +16,14 @@ export default function Navbar({ currentPage, onNavigate }) {
             onClick={() => onNavigate('dashboard')}
             className="flex items-center gap-2.5 focus:outline-none"
           >
-            <div className="w-6 h-6 bg-white rounded flex items-center justify-center flex-shrink-0">
+            <div className="w-7 h-7 bg-[#0F766E] rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <rect x="1" y="7" width="3" height="6" fill="#0a0a0a" />
-                <rect x="5.5" y="4" width="3" height="9" fill="#0a0a0a" />
-                <rect x="10" y="1" width="3" height="12" fill="#0a0a0a" />
+                <rect x="1" y="7" width="3" height="6" fill="white" />
+                <rect x="5.5" y="4" width="3" height="9" fill="white" />
+                <rect x="10" y="1" width="3" height="12" fill="white" />
               </svg>
             </div>
-            <span className="text-sm font-semibold text-white tracking-tight">
+            <span className="text-sm font-bold text-[#0F172A] tracking-tight">
               Global Treasury Agent
             </span>
           </button>
@@ -58,10 +58,10 @@ export default function Navbar({ currentPage, onNavigate }) {
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
-              className={`whitespace-nowrap text-xs px-3 py-1 rounded flex-shrink-0 transition-colors ${
+              className={`whitespace-nowrap text-xs px-3 py-1 rounded-lg flex-shrink-0 transition-colors font-medium ${
                 currentPage === item.id
-                  ? 'bg-[#1a1a1a] text-white'
-                  : 'text-[#666666] hover:text-white'
+                  ? 'bg-teal-50 text-[#0F766E]'
+                  : 'text-[#64748B] hover:text-[#0F172A]'
               }`}
             >
               {item.label}

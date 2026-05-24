@@ -25,9 +25,15 @@ export const SCENARIOS = {
       referenceMatch: true,
       dateMatch: true,
       amountMatch: true,
+      customerMatch: true,
       suggestedAction: 'Mark invoice as paid and archive reconciliation record.',
       explanation:
         'The invoice amount of USD 10.00 was converted to MYR 42.50 at a rate of 4.25. The selected bank transaction received MYR 42.50 on the same date with matching reference TXN12345. All fields — amount, date, reference, and counterparty — are confirmed. This payment can be marked as reconciled.',
+      fxRate: 4.25,
+      fxFrom: 'USD',
+      fxTo: 'MYR',
+      fxDate: '2026-05-22',
+      bankFeeNote: null,
       scoreBreakdown: {
         amountScore: 50, dateScore: 20, referenceScore: 20, customerScore: 10,
       },
@@ -68,9 +74,15 @@ export const SCENARIOS = {
       referenceMatch: true,
       dateMatch: true,
       amountMatch: false,
+      customerMatch: true,
       suggestedAction: 'Request remaining balance of MYR 4.50 from customer.',
       explanation:
         'The expected amount was MYR 42.50, but the bank received MYR 38.00. The payment is short by MYR 4.50. Reference TXN55512 and date match confirm this is a payment from Global Supplies Sdn Bhd. The shortfall may be due to international wire transfer fees deducted at the originating bank. This item should be flagged for follow-up.',
+      fxRate: 4.25,
+      fxFrom: 'USD',
+      fxTo: 'MYR',
+      fxDate: '2026-05-21',
+      bankFeeNote: 'Wire transfer fee of approx. MYR 4.50 may have been deducted at the originating bank.',
       scoreBreakdown: {
         amountScore: 22, dateScore: 20, referenceScore: 20, customerScore: 10,
       },
@@ -111,9 +123,15 @@ export const SCENARIOS = {
       referenceMatch: true,
       dateMatch: true,
       amountMatch: false,
+      customerMatch: true,
       suggestedAction: 'Flag excess MYR 7.50 for refund or apply as credit note.',
       explanation:
         'The bank received MYR 50.00 against an expected MYR 42.50 for invoice INV-2026-003. An overpayment of MYR 7.50 was detected. Reference TXN77821 and date match confirm the payment is from Pacific Retail Co. The customer may have applied an incorrect FX rate or included an advance payment. A credit note or refund process should be initiated.',
+      fxRate: 4.25,
+      fxFrom: 'USD',
+      fxTo: 'MYR',
+      fxDate: '2026-05-20',
+      bankFeeNote: 'No fee deduction detected. Customer may have applied a different FX rate (actual received: 1 USD = 5.00 MYR).',
       scoreBreakdown: {
         amountScore: 24, dateScore: 20, referenceScore: 20, customerScore: 10,
       },
@@ -154,9 +172,15 @@ export const SCENARIOS = {
       referenceMatch: false,
       dateMatch: true,
       amountMatch: false,
+      customerMatch: false,
       suggestedAction: 'Manually verify reference number mismatch with finance team.',
       explanation:
         'A near-match was detected for invoice INV-2026-004. The amount is close (MYR 0.40 difference within tolerance) and the date matches, but the reference number TXN12346 does not exactly match the expected TXN12345. This may indicate a typographic error in the payment reference or a separate transaction. Manual review is required to confirm.',
+      fxRate: 4.25,
+      fxFrom: 'USD',
+      fxTo: 'MYR',
+      fxDate: '2026-05-22',
+      bankFeeNote: 'Shortfall of MYR 0.40 is within standard rounding tolerance — likely not a fee issue.',
       scoreBreakdown: {
         amountScore: 44, dateScore: 20, referenceScore: 0, customerScore: 10,
       },
@@ -197,9 +221,15 @@ export const SCENARIOS = {
       referenceMatch: false,
       dateMatch: true,
       amountMatch: false,
+      customerMatch: false,
       suggestedAction: 'Escalate to finance team. Investigate source and intent of transfer.',
       explanation:
         'No matching invoice was found for bank transaction TXN99999. The received amount MYR 80.00 does not correspond to any open invoice in the system. The reference number is unrecognised and the counterparty description does not match any known customer. This transaction cannot be reconciled automatically and requires manual investigation.',
+      fxRate: 4.25,
+      fxFrom: 'USD',
+      fxTo: 'MYR',
+      fxDate: '2026-05-22',
+      bankFeeNote: 'FX back-calculation: MYR 80.00 ≈ USD 18.82 at rate 4.25 — no open invoice matches this value.',
       scoreBreakdown: {
         amountScore: 0, dateScore: 20, referenceScore: 0, customerScore: 0,
       },
@@ -247,3 +277,36 @@ export const REPORT_STATS = {
   unmatched: 3,
   totalValue: 'MYR 18,420.50',
 }
+
+// =============================================================
+// DATA CONTRACT — agreed JSON interface between data extraction
+// teammate and the reconciliation frontend.
+// When real extraction output is ready, replace this with the
+// actual API/agent response. Shape must remain identical.
+// =============================================================
+export const extractedSampleData = {
+  invoice: {
+    invoiceNo: 'INV-2026-001',
+    customer: 'ABC Trading Ltd',
+    invoiceAmount: 10.00,
+    invoiceCurrency: 'USD',
+    expectedLocalAmount: 42.50,
+    localCurrency: 'MYR',
+    invoiceDate: '2026-05-22',
+    reference: 'TXN12345',
+  },
+  bankTransactions: [
+    { id: 1, date: '2026-05-22', reference: 'TXN12345', description: 'ABC Trading payment',  amount: 42.50, currency: 'MYR' },
+    { id: 2, date: '2026-05-22', reference: 'TXN99999', description: 'XYZ payment',           amount: 80.00, currency: 'MYR' },
+    { id: 3, date: '2026-05-21', reference: 'TXN55512', description: 'Partial payment',       amount: 38.00, currency: 'MYR' },
+  ],
+}
+
+// Default bank transaction rows (used in reconciliation workspace)
+export const bankTransactions = [
+  { id: 1, date: '2026-05-22', reference: 'TXN12345', description: 'ABC Trading payment',           amount: 42.50, currency: 'MYR', status: 'Matched',       scenarioId: 'perfectMatch'  },
+  { id: 2, date: '2026-05-22', reference: 'TXN99999', description: 'XYZ payment',                   amount: 80.00, currency: 'MYR', status: 'Unmatched',     scenarioId: 'unmatched'     },
+  { id: 3, date: '2026-05-21', reference: 'TXN55512', description: 'Partial payment — Global Supplies', amount: 38.00, currency: 'MYR', status: 'Underpaid', scenarioId: 'underpaid'     },
+  { id: 4, date: '2026-05-20', reference: 'TXN77821', description: 'Pacific Retail Co transfer',    amount: 50.00, currency: 'MYR', status: 'Overpaid',      scenarioId: 'overpaid'      },
+  { id: 5, date: '2026-05-22', reference: 'TXN12346', description: 'Nexus Import Export wire',      amount: 42.10, currency: 'MYR', status: 'Possible Match', scenarioId: 'possibleMatch' },
+]

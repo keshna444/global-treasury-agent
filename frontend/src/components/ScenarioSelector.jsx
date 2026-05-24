@@ -1,9 +1,15 @@
 import { SCENARIO_LIST } from '../data/mockData'
 
 const scenarioDot = (color) => {
-  if (color === 'green') return 'bg-green-400'
-  if (color === 'red')   return 'bg-red-400'
-  return 'bg-amber-400'
+  if (color === 'green') return 'bg-[#16A34A]'
+  if (color === 'red')   return 'bg-[#DC2626]'
+  return 'bg-[#D97706]'
+}
+
+const scenarioTextColor = (color) => {
+  if (color === 'green') return 'text-[#16A34A]'
+  if (color === 'red')   return 'text-[#DC2626]'
+  return 'text-[#D97706]'
 }
 
 export default function ScenarioSelector({ selected, onSelect, onRun, isRunning }) {
@@ -12,7 +18,7 @@ export default function ScenarioSelector({ selected, onSelect, onRun, isRunning 
       <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
         <div>
           <p className="label-text mb-1">Scenario</p>
-          <h2 className="text-base font-semibold text-white">Select Reconciliation Scenario</h2>
+          <h2 className="text-base font-semibold text-[#0F172A]">Select Reconciliation Scenario</h2>
         </div>
         <button
           onClick={onRun}
@@ -21,7 +27,7 @@ export default function ScenarioSelector({ selected, onSelect, onRun, isRunning 
         >
           {isRunning ? (
             <>
-              <span className="inline-block w-3 h-3 border border-black border-t-transparent rounded-full animate-spin" />
+              <span className="inline-block w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
               Processing...
             </>
           ) : (
@@ -37,16 +43,16 @@ export default function ScenarioSelector({ selected, onSelect, onRun, isRunning 
             <button
               key={scenario.id}
               onClick={() => onSelect(scenario)}
-              className={`flex items-center gap-2 px-3 py-2 rounded text-sm border transition-colors duration-150 ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm border transition-all duration-150 ${
                 isSelected
-                  ? 'bg-[#1a1a1a] border-[#3a3a3a] text-white'
-                  : 'bg-transparent border-[#1e1e1e] text-[#888888] hover:border-[#2a2a2a] hover:text-[#cccccc]'
+                  ? 'bg-teal-50 border-[#0F766E] text-[#0F172A] shadow-sm'
+                  : 'bg-white border-[#E2E8F0] text-[#64748B] hover:border-[#CBD5E1] hover:text-[#0F172A] hover:bg-[#F8FAFC]'
               }`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${scenarioDot(scenario.color)}`} />
-              {scenario.label}
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${scenarioDot(scenario.color)}`} />
+              <span className={isSelected ? 'font-semibold' : 'font-medium'}>{scenario.label}</span>
               {isSelected && (
-                <span className="label-text normal-case tracking-normal text-[10px] ml-1">
+                <span className={`text-[10px] font-bold ml-1 ${scenarioTextColor(scenario.color)}`}>
                   {scenario.result.confidence}%
                 </span>
               )}

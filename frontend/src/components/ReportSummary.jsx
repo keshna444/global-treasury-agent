@@ -65,6 +65,21 @@ export default function ReportSummary() {
         </div>
       </div>
 
+      {/* Failed cases notification */}
+      {(REPORT_STATS.unmatched > 0 || REPORT_STATS.pendingReview > 0) && (
+        <div className="card p-4 border-red-200 bg-red-50">
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse" />
+            <p className="text-xs font-semibold text-[#DC2626]">Action Required — Failed Cases</p>
+          </div>
+          <p className="text-xs text-[#64748B] leading-relaxed">
+            {REPORT_STATS.unmatched} unmatched transaction{REPORT_STATS.unmatched !== 1 ? 's' : ''} and{' '}
+            {REPORT_STATS.pendingReview} item{REPORT_STATS.pendingReview !== 1 ? 's' : ''} pending review require
+            manual investigation. Escalate unmatched payments to the finance team immediately.
+          </p>
+        </div>
+      )}
+
       {/* Period breakdown table */}
       <div className="card overflow-hidden">
         <div className="p-4 border-b border-[#1a1a1a]">

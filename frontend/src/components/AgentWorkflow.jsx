@@ -6,17 +6,18 @@ export default function AgentWorkflow({ completedSteps, isRunning }) {
       <div className="flex items-center justify-between mb-5">
         <div>
           <p className="label-text mb-0.5">Agent Pipeline</p>
-          <h3 className="text-sm font-semibold text-white">AI Reconciliation Workflow</h3>
+          <h3 className="text-sm font-semibold text-[#0F172A]">AI Reconciliation Workflow</h3>
+          <p className="text-xs text-[#94A3B8] mt-0.5">Tool-based reasoning pipeline</p>
         </div>
         {isRunning && (
-          <div className="flex items-center gap-2 text-xs text-amber-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <div className="flex items-center gap-2 text-xs text-[#D97706] font-medium">
+            <span className="w-2 h-2 rounded-full bg-[#D97706] animate-pulse" />
             Processing
           </div>
         )}
         {!isRunning && completedSteps === AGENT_FLOW_STEPS.length && (
-          <div className="flex items-center gap-2 text-xs text-green-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
+          <div className="flex items-center gap-2 text-xs text-[#16A34A] font-medium">
+            <span className="w-2 h-2 rounded-full bg-[#16A34A]" />
             Complete
           </div>
         )}
@@ -32,7 +33,7 @@ export default function AgentWorkflow({ completedSteps, isRunning }) {
             <div key={step.id} className="flex sm:flex-col flex-row flex-1 items-center">
               {/* Step card */}
               <div
-                className={`flex-1 sm:flex-none p-3 rounded border text-center transition-all duration-300 w-full ${
+                className={`flex-1 sm:flex-none p-3 rounded-lg border text-center transition-all duration-300 w-full ${
                   isDone       ? 'step-done' :
                   isProcessing ? 'step-processing' :
                   'step-waiting'
@@ -40,33 +41,33 @@ export default function AgentWorkflow({ completedSteps, isRunning }) {
               >
                 {/* Step number */}
                 <div className={`text-xs font-mono mb-1.5 ${
-                  isDone       ? 'text-[#555555]' :
-                  isProcessing ? 'text-amber-400' :
-                  'text-[#333333]'
+                  isDone       ? 'text-[#16A34A]' :
+                  isProcessing ? 'text-[#D97706]' :
+                  'text-[#CBD5E1]'
                 }`}>
                   {String(i + 1).padStart(2, '0')}
                 </div>
 
-                {/* Status dot */}
+                {/* Status icon */}
                 <div className="flex justify-center mb-2">
                   {isDone ? (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="#2a2a2a" strokeWidth="1.5" />
-                      <path d="M5 8l2 2 4-4" stroke="#22c55e" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <circle cx="9" cy="9" r="8" fill="#DCFCE7" stroke="#BBF7D0" strokeWidth="1.5" />
+                      <path d="M6 9l2.5 2.5 4-4" stroke="#16A34A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   ) : isProcessing ? (
-                    <span className="w-4 h-4 border border-amber-400 border-t-transparent rounded-full animate-spin inline-block" />
+                    <span className="w-4 h-4 border-2 border-[#D97706] border-t-transparent rounded-full animate-spin inline-block" />
                   ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="7" stroke="#222222" strokeWidth="1.5" />
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                      <circle cx="9" cy="9" r="8" fill="white" stroke="#E2E8F0" strokeWidth="1.5" />
                     </svg>
                   )}
                 </div>
 
                 <p className={`text-xs font-medium leading-tight ${
-                  isDone       ? 'text-[#666666]' :
-                  isProcessing ? 'text-amber-300' :
-                  'text-[#333333]'
+                  isDone       ? 'text-[#16A34A]' :
+                  isProcessing ? 'text-[#D97706]' :
+                  'text-[#94A3B8]'
                 }`}>
                   {step.label}
                 </p>
@@ -74,10 +75,10 @@ export default function AgentWorkflow({ completedSteps, isRunning }) {
 
               {/* Connector */}
               {i < AGENT_FLOW_STEPS.length - 1 && (
-                <div className={`sm:hidden mx-2 w-px h-4 ${isDone ? 'bg-[#2a2a2a]' : 'bg-[#1a1a1a]'}`} />
+                <div className={`sm:hidden mx-2 w-px h-4 ${isDone ? 'bg-[#BBF7D0]' : 'bg-[#E2E8F0]'}`} />
               )}
               {i < AGENT_FLOW_STEPS.length - 1 && (
-                <div className={`hidden sm:block h-px flex-none w-3 ${isDone ? 'bg-[#2a2a2a]' : 'bg-[#1a1a1a]'}`} />
+                <div className={`hidden sm:block h-px flex-none w-3 ${isDone ? 'bg-[#BBF7D0]' : 'bg-[#E2E8F0]'}`} />
               )}
             </div>
           )
@@ -86,14 +87,14 @@ export default function AgentWorkflow({ completedSteps, isRunning }) {
 
       {/* Overall progress bar */}
       {(isRunning || completedSteps > 0) && (
-        <div className="mt-4 pt-4 border-t border-[#1a1a1a]">
+        <div className="mt-4 pt-4 border-t border-[#E2E8F0]">
           <div className="flex items-center justify-between mb-1.5">
             <span className="label-text">Progress</span>
             <span className="label-text">{completedSteps} / {AGENT_FLOW_STEPS.length}</span>
           </div>
-          <div className="h-1 bg-[#1a1a1a] rounded-full overflow-hidden">
+          <div className="h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden">
             <div
-              className="h-full bg-white rounded-full transition-all duration-500"
+              className="h-full bg-[#0F766E] rounded-full transition-all duration-500"
               style={{ width: `${(completedSteps / AGENT_FLOW_STEPS.length) * 100}%` }}
             />
           </div>
